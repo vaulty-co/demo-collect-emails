@@ -1,0 +1,41 @@
+{
+	"options":{
+		"default_upstream":"http://backend:3001"
+	},
+	"routes":[
+		{
+			"name":"in-tokenize-email",
+			"method":"POST",
+			"url":"/subscribe",
+			"request_transformations": [
+				{
+					"type": "form",
+					"fields": "email",
+					"action": {
+						"type": "tokenize",
+						"format": "email"
+					}
+				}
+			]
+		},
+		{
+			"name":"in-all",
+			"method":"*",
+			"url":"/*"
+		},
+		{
+			"name":"out-send-email",
+			"method":"POST",
+			"url":"https://api.mailgun.net/v3/mg.vaulty.co/messages",
+			"request_transformations": [
+				{
+					"type": "form",
+					"fields": "to",
+					"action": {
+						"type": "detokenize"
+					}
+				}
+			]
+		}
+	]
+}

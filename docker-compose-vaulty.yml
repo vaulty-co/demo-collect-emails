@@ -1,0 +1,23 @@
+version: '2.0'
+services:
+  backend:
+    build: .
+    command: ./main -port 3001
+    environment:
+      - MG_API_KEY
+      - PROXY_PASS
+    volumes:
+      - "./vaulty/ca.cert:/app/ca.cert"
+
+  vaulty:
+    image: vaulty/vaulty
+    command: ./vaulty proxy --debug -r /.vaulty/routes.json --ca /.vaulty
+    ports:
+      - "3001:8080"
+    environment:
+      - PROXY_PASS
+      - ENCRYPTION_KEY
+    links:
+      - backend
+    volumes:
+      - "./vaulty:/.vaulty"

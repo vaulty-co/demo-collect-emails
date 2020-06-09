@@ -61,7 +61,7 @@ func main() {
 	filesDir := filepath.Join(workDir, "static")
 	r.Get("/*", http.FileServer(http.Dir(filesDir)).ServeHTTP)
 
-	var port = flag.String("port", "3001", "web server port")
+	var port = flag.String("port", "3000", "web server port")
 	flag.Parse()
 	http.ListenAndServe(fmt.Sprintf(":%s", *port), r)
 }

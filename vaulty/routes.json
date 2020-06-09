@@ -1,6 +1,6 @@
 {
 	"options":{
-		"default_upstream":"http://backend:3001"
+		"default_upstream":"http://backend:3000"
 	},
 	"routes":[
 		{

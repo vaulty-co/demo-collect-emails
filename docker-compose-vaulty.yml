@@ -2,7 +2,7 @@ version: '2.0'
 services:
   backend:
     build: .
-    command: ./main -port 3001
+    command: ./main -port 3000
     environment:
       - MG_API_KEY
       - MG_DOMAIN
@@ -18,7 +18,7 @@ services:
     # image: vaulty/vaulty
     command: ./vaulty proxy --debug -r /.vaulty/routes.json --ca /.vaulty
     ports:
-      - "3001:8080"
+      - "3000:8080"
     environment:
       - PROXY_PASS
       - ENCRYPTION_KEY

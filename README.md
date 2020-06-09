@@ -1,42 +1,29 @@
-# demo-collect-emails
+# An email list without emails
 
-## Prerequisites
+This is the source code of the demo application of the [Vaulty cookbook](https://vaulty.co/docs/cookbooks/email-list-with-protected-emails).
 
-* Docker and Docker compose
-* API Key from active Mailgun account
+![front-page](https://vaulty.co/img/cookbooks/demo-front.png)
 
-Create .env file with Mailgun API Key and Vaulty configuration:
+Instructions on how to run the app, how to add Vaulty can be found in the [cookbook](https://vaulty.co/docs/cookbooks/email-list-with-protected-emails).
 
-```
-MG_API_KEY=xxxxxxxxxxx
-PROXY_PASS=12345
-ENCRYPTION_KEY=776f726420746f206120736563726574
-```
+### Run the app
 
-## Run without Vaulty
+For the demo ap, we use Docker, Docker Compose. We also need the API key of the active Mailgun account. First, let's create `.env` file with environment variables:
 
-You can build and run the demo app with docker compose:
-
-```docker-compose up```
-
-## Run with Vaulty
-
-To run demo app and Vaulty instance:
-
-```
-docker-compose --file docker-compose-vaulty.yml up
+```bash
+MG_API_KEY=key-xxxxxxxxxxxxxxxxxxxxxx
+MG_DOMAIN=mg.yourdomain.com
 ```
 
-Get into backend container:
+* `MG_DOMAIN` - Your Mailgun domain
+* `MG_API_KEY` - Mailgun [API Key](https://help.mailgun.com/hc/en-us/articles/203380100-Where-Can-I-Find-My-API-Key-and-SMTP-Credentials-)
 
-```
-docker-compose --file docker-compose-vaulty.yml exec backend sh
+To run the demo application you need to put these commands into your shell:
+
+```shell
+git clone git@github.com:vaulty-co/demo-collect-emails.git
+cd demo-collect-emails
+docker-compose up
 ```
 
-and then inside backend container run following to add Vaulty's CA into system certificates:
-
-```
-cp ./vaulty/ca.cert /usr/local/share/ca-certificates/vaulty.cert && update-ca-certificates
-```
-
-then navigate your browser to http://127.0.0.1:3001.
+Then, navigate the browser to http://127.0.0.1:3000

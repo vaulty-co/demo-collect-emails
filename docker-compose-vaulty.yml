@@ -5,12 +5,17 @@ services:
     command: ./main -port 3001
     environment:
       - MG_API_KEY
-      - PROXY_PASS
+      - MG_DOMAIN
+      - "https_proxy=http://x:${PROXY_PASS}@vaulty:8080"
     volumes:
+      # demo app should have access to Vaulty's CA certificate
+      # when we run command to add it to system certificates
       - "./vaulty/ca.cert:/app/ca.cert"
 
   vaulty:
-    image: vaulty/vaulty
+    build:
+      context: ../../vaulty
+    # image: vaulty/vaulty
     command: ./vaulty proxy --debug -r /.vaulty/routes.json --ca /.vaulty
     ports:
       - "3001:8080"

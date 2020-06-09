@@ -2,22 +2,18 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
-	"crypto/x509"
 	"flag"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/mailgun/mailgun-go/v3"
+	"github.com/mailgun/mailgun-go/v4"
 )
 
 type email struct {
@@ -71,19 +67,11 @@ func main() {
 }
 
 func sendConfirmationEmail(to string) error {
-	domain := "mg.vaulty.co"
-	apiKey := os.Getenv("MG_API_KEY")
-	// configure Mailgun client
-	mg := mailgun.NewMailgun(domain, apiKey)
-
-	// create http client with using Vaulty as proxy
-	httpClient, err := clientWithProxy()
+	// create Mailgun client using env variables (MG_API_KEY, MG_DOMAIN)
+	mg, err := mailgun.NewMailgunFromEnv()
 	if err != nil {
 		return err
 	}
-
-	// configure Mailgun to use client with proxy
-	mg.SetClient(httpClient)
 
 	// create message with recipient "to"
 	m := mg.NewMessage("Owner <pavel+demo@vaulty.co>", "Confirmation Email", "Hey! Your subscription is confirmed!", to)
@@ -95,43 +83,4 @@ func sendConfirmationEmail(to string) error {
 	// send message
 	_, _, err = mg.Send(ctx, m)
 	return err
-}
-
-func clientWithProxy() (*http.Client, error) {
-	// Get the SystemCertPool, continue with an empty pool on error
-	rootCAs, _ := x509.SystemCertPool()
-	if rootCAs == nil {
-		rootCAs = x509.NewCertPool()
-	}
-
-	// Read in the cert file
-	certs, err := ioutil.ReadFile("ca.cert")
-	if err != nil {
-		log.Fatalf("Failed to append ca.cert to RootCAs: %v", err)
-		return nil, err
-	}
-
-	// Append our cert to the system pool
-	if ok := rootCAs.AppendCertsFromPEM(certs); !ok {
-		log.Fatalf("Failed to parse and add ca.cert to the pool of certificates")
-	}
-
-	// Trust the augmented cert pool in our client
-	config := &tls.Config{
-		RootCAs: rootCAs,
-	}
-
-	proxyPass := os.Getenv("PROXY_PASS")
-
-	proxyURL, _ := url.Parse(fmt.Sprintf("http://x:%s@vaulty:8080", proxyPass))
-
-	tr := &http.Transport{
-		Proxy: func(req *http.Request) (*url.URL, error) {
-			return proxyURL, nil
-		},
-		TLSClientConfig: config,
-	}
-
-	client := &http.Client{Transport: tr}
-	return client, nil
 }

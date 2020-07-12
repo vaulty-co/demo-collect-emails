@@ -2,7 +2,7 @@
 
 This is the source code of the demo application of the [Vaulty cookbook](https://docs.vaulty.co/cookbooks/email-list-with-protected-emails).
 
-![front-page](https://vaulty.co/img/cookbooks/demo-front.png)
+![front-page](https://docs.vaulty.co/img/cookbooks/demo-front.png)
 
 Instructions on how to run the app, how to add Vaulty can be found in the [cookbook](https://docs.vaulty.co/cookbooks/email-list-with-protected-emails).
 
